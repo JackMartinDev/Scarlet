@@ -70,19 +70,19 @@ namespace Text2Speech
 					break;
 
 				case "calendar":
-					calendar.DisplayEvents(speechSynthesizer, "All", Calendar.EventFrequency.All);
+					calendar.DisplayEvents(speechSynthesizer, Calendar.EventType.All, Calendar.EventFrequency.All);
 					break;
 
 				case "work":
-					calendar.DisplayEvents(speechSynthesizer, "Work", Calendar.EventFrequency.All);
+					calendar.DisplayEvents(speechSynthesizer, Calendar.EventType.Work, Calendar.EventFrequency.All);
 					break;
 
 				case "class":
-					calendar.DisplayEvents(speechSynthesizer, "Class", Calendar.EventFrequency.All);
+					calendar.DisplayEvents(speechSynthesizer, Calendar.EventType.Class, Calendar.EventFrequency.All);
 					break;
 
 				case "when is my next shift":
-					calendar.DisplayEvents(speechSynthesizer, "Work", Calendar.EventFrequency.Single);
+					calendar.DisplayEvents(speechSynthesizer, Calendar.EventType.Work, Calendar.EventFrequency.Single);
 					break;
 
 				case "quit":
