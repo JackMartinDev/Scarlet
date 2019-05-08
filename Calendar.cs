@@ -7,6 +7,7 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Speech.Synthesis;
+using System.Globalization;
 
 namespace Text2Speech
 {
@@ -17,6 +18,7 @@ namespace Text2Speech
 		static string[] Scopes = { CalendarService.Scope.CalendarReadonly };
 		static string ApplicationName = "Google Calendar API .NET Quickstart";
 
+		public enum EventType { All = 0, Work = 1, Class = 2}
 		public enum EventFrequency { All = 0, Single = 1};
 
 		// event list
@@ -60,7 +62,7 @@ namespace Text2Speech
 			events = request.Execute();;
 		}
 
-		public void DisplayEvents(SpeechSynthesizer speechSynthesizer, string eventType, EventFrequency eventFrequency)
+		public void DisplayEvents(SpeechSynthesizer speechSynthesizer, EventType eventType, EventFrequency eventFrequency)
 		{
 			Console.WriteLine("Upcoming events:");
 			int numberOfEvents = 0;
@@ -76,12 +78,12 @@ namespace Text2Speech
 						when = eventItem.Start.Date;
 					}
 
-					if (eventType == "All")
+					if (eventType == EventType.All)
 					{
 						Console.WriteLine("{0}    ({1} - {2})", eventItem.Summary, when, end);
 						numberOfEvents++;
 					}
-					else if (eventItem.Summary.Contains(eventType))
+					else if (eventItem.Summary.Contains(eventType.ToString()))
 					{
 						Console.WriteLine("{0}    ({1} - {2})", eventItem.Summary, when, end);
 						numberOfEvents++;
@@ -91,7 +93,7 @@ namespace Text2Speech
 					}
 				}
 				if (numberOfEvents == 0)
-					Console.WriteLine("No upcoming events of that type");
+					Console.WriteLine("No upcoming events of that type.");
 			}
 			else
 			{
