@@ -65,7 +65,7 @@ namespace Text2Speech
 		public void DisplayEvents(SpeechSynthesizer speechSynthesizer, EventType eventType, EventFrequency eventFrequency)
 		{
 			Console.WriteLine("Upcoming events:");
-			int numberOfEvents = 0;
+			bool noEvents = true;
 			if (events.Items != null && events.Items.Count > 0)
 			{
 				foreach (var eventItem in events.Items)
@@ -92,21 +92,22 @@ namespace Text2Speech
 					if (eventType == EventType.All)
 					{
 						Console.WriteLine("{0}    ({1} - {2})", eventItem.Summary, start, end);
-						numberOfEvents++;
+						noEvents = false;
 					}
-					else if (eventItem.Summary.StartsWith(eventType.ToString()))
+					else if (eventItem.Summary.Contains(eventType.ToString()))
 					{
 						Console.WriteLine("{0}    ({1} - {2})", eventItem.Summary, start, end);
-						numberOfEvents++;
+						noEvents = false;
 						speechSynthesizer.Speak($"{eventItem.Summary} on {day} {month} {date} from {startTime} to {endTime}");
 						if (eventFrequency == EventFrequency.Single)
 							break;
 					}
 				}
-				if (numberOfEvents == 0)
+				if(noEvents == true)
+				{
 					Console.WriteLine("No upcoming events of that type.");
 					speechSynthesizer.Speak("No upcoming events of that type found");
-
+				}
 			}
 			else
 			{
