@@ -70,36 +70,52 @@ namespace Text2Speech
 			{
 				foreach (var eventItem in events.Items)
 				{
-					string when = eventItem.Start.DateTime.ToString();
+					string start = eventItem.Start.DateTime.ToString();
 					string end = eventItem.End.DateTime.ToString();
 
-					if (string.IsNullOrEmpty(when))
+					DateTime startFormatted = DateTime.ParseExact(start, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
+					DateTime endFormatted = DateTime.ParseExact(end, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
+
+					string date = startFormatted.ToString("dd");
+					string day = startFormatted.ToString("dddd");
+					string month = startFormatted.ToString("MMMM");
+					string year = startFormatted.ToString("yyyy");
+					string startTime = startFormatted.ToString("h:mm tt");
+					string endTime = endFormatted.ToString("h:mm tt");
+					
+
+					if (string.IsNullOrEmpty(start))
 					{
-						when = eventItem.Start.Date;
+						start = eventItem.Start.Date;
 					}
 
 					if (eventType == EventType.All)
 					{
-						Console.WriteLine("{0}    ({1} - {2})", eventItem.Summary, when, end);
+						Console.WriteLine("{0}    ({1} - {2})", eventItem.Summary, start, end);
 						numberOfEvents++;
 					}
-					else if (eventItem.Summary.Contains(eventType.ToString()))
+					else if (eventItem.Summary.StartsWith(eventType.ToString()))
 					{
-						Console.WriteLine("{0}    ({1} - {2})", eventItem.Summary, when, end);
+						Console.WriteLine("{0}    ({1} - {2})", eventItem.Summary, start, end);
 						numberOfEvents++;
-						//speechSynthesizer.Speak($"{eventItem.Summary} at {when}");
+						speechSynthesizer.Speak($"{eventItem.Summary} on {day} {month} {date} from {startTime} to {endTime}");
 						if (eventFrequency == EventFrequency.Single)
 							break;
 					}
 				}
 				if (numberOfEvents == 0)
 					Console.WriteLine("No upcoming events of that type.");
+					speechSynthesizer.Speak("No upcoming events of that type found");
+
 			}
 			else
 			{
 				Console.WriteLine("No upcoming events found.");
+				speechSynthesizer.Speak("No upcoming events found");
+
 			}
 		}
+
 
 	}
 }
