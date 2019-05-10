@@ -91,6 +91,10 @@ namespace Text2Speech
 					Process.Start(@"C:\Windows\SysWOW64\calc.exe");
 					break;
 
+				case "close calculator":
+					CloseProgram("calculator");
+					break;
+
 				case "quit":
 					Console.WriteLine("Quitting");
 					Environment.Exit(0);
@@ -102,7 +106,7 @@ namespace Text2Speech
 		private void SetupGrammarAndChoices()
 		{
 			Choices commands = new Choices();
-			commands.Add(new string[] { "temperature", "calendar","when is my next shift", "work", "class", "open calculator", "quit"});
+			commands.Add(new string[] { "temperature", "calendar","when is my next shift", "work", "class", "open calculator", "close calculator", "quit"});
 			GrammarBuilder grammarBuilder = new GrammarBuilder();
 			grammarBuilder.Append(commands);
 			Grammar grammer = new Grammar(grammarBuilder);
@@ -127,6 +131,16 @@ namespace Text2Speech
 			else if (DateTime.Now.Hour >= 6)
 				return "Evening";
 			return "Day";
+		}
+
+		// Kill active program
+		private void CloseProgram(string programName)
+		{
+			Process[] processes = Process.GetProcessesByName(programName);
+			foreach(Process process in processes)
+			{
+				process.Kill();
+			}
 		}
 
 	}
