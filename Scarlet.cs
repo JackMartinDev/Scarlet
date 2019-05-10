@@ -2,6 +2,8 @@
 using System.Threading;
 using System.Speech.Synthesis;
 using System.Speech.Recognition;
+using System.Diagnostics;
+using System.Globalization;
 
 namespace Text2Speech
 {
@@ -85,6 +87,10 @@ namespace Text2Speech
 					calendar.DisplayEvents(speechSynthesizer, Calendar.EventType.Work, Calendar.EventFrequency.Single);
 					break;
 
+				case "open calculator":
+					Process.Start(@"C:\Windows\SysWOW64\calc.exe");
+					break;
+
 				case "quit":
 					Console.WriteLine("Quitting");
 					Environment.Exit(0);
@@ -96,12 +102,12 @@ namespace Text2Speech
 		private void SetupGrammarAndChoices()
 		{
 			Choices commands = new Choices();
-			commands.Add(new string[] { "temperature", "calendar","when is my next shift", "work", "class", "quit"});
+			commands.Add(new string[] { "temperature", "calendar","when is my next shift", "work", "class", "open calculator", "quit"});
 			GrammarBuilder grammarBuilder = new GrammarBuilder();
 			grammarBuilder.Append(commands);
 			Grammar grammer = new Grammar(grammarBuilder);
 
-			engine.LoadGrammarAsync(grammer);
+			engine.LoadGrammar(grammer);
 		}
 
 		// Modify the settings of the synthesis object
