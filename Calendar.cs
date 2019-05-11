@@ -18,8 +18,7 @@ namespace Text2Speech
 		static string[] Scopes = { CalendarService.Scope.CalendarReadonly };
 		static string ApplicationName = "Google Calendar API .NET Quickstart";
 
-		public enum EventType { All = 0, Work = 1, Class = 2}
-		public enum EventFrequency { All = 0, Single = 1};
+		public enum EventType {Work = 1, Class = 2}
 
 		// event list
 		Events events = null;
@@ -62,9 +61,33 @@ namespace Text2Speech
 			events = request.Execute();;
 		}
 
-		public void DisplayEvents(SpeechSynthesizer speechSynthesizer, EventType eventType, EventFrequency eventFrequency)
+		public void DisplayAllEvents()
 		{
 			Console.WriteLine("Upcoming events:");
+			if (events.Items != null && events.Items.Count > 0)
+			{
+				foreach (var eventItem in events.Items)
+				{
+					string start = eventItem.Start.DateTime.ToString();
+					string end = eventItem.End.DateTime.ToString();
+					
+					if (string.IsNullOrEmpty(start))
+					{
+						start = eventItem.Start.Date;
+					}
+
+					Console.WriteLine("{0}    ({1} - {2})", eventItem.Summary, start, end);
+				}
+			}
+			else
+			{
+				Console.WriteLine("No upcoming events found.");;
+
+			}
+		}
+
+		public string NextEvent(EventType eventType)
+		{
 			bool noEvents = true;
 			if (events.Items != null && events.Items.Count > 0)
 			{
@@ -82,41 +105,24 @@ namespace Text2Speech
 					string year = startFormatted.ToString("yyyy");
 					string startTime = startFormatted.ToString("h:mm tt");
 					string endTime = endFormatted.ToString("h:mm tt");
-					
 
 					if (string.IsNullOrEmpty(start))
 					{
 						start = eventItem.Start.Date;
 					}
 
-					if (eventType == EventType.All)
+					if (eventItem.Summary.Contains(eventType.ToString()))
 					{
-						Console.WriteLine("{0}    ({1} - {2})", eventItem.Summary, start, end);
 						noEvents = false;
-					}
-					else if (eventItem.Summary.Contains(eventType.ToString()))
-					{
-						Console.WriteLine("{0}    ({1} - {2})", eventItem.Summary, start, end);
-						noEvents = false;
-						speechSynthesizer.Speak($"{eventItem.Summary} on {day} {month} {date} from {startTime} to {endTime}");
-						if (eventFrequency == EventFrequency.Single)
-							break;
+						return $"{eventItem.Summary} on {day} {month} {date} from {startTime} to {endTime}";
 					}
 				}
-				if(noEvents == true)
+				if (noEvents == true)
 				{
-					Console.WriteLine("No upcoming events of that type.");
-					speechSynthesizer.Speak("No upcoming events of that type found");
+					return "No upcoming events of that type found.";
 				}
 			}
-			else
-			{
-				Console.WriteLine("No upcoming events found.");
-				speechSynthesizer.Speak("No upcoming events found");
-
-			}
+			return "No events found";
 		}
-
-
 	}
 }
