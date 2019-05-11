@@ -13,8 +13,10 @@ namespace Text2Speech
 		SpeechSynthesizer speechSynthesizer = null;
 		Weather weather = null;
 		Calendar calendar = null;
+
+		bool wake = false;
 		
-		public void Initialize()
+		private void Initialize()
 		{
 			Console.WriteLine("Setting up Scarlet...");
 
@@ -65,34 +67,46 @@ namespace Text2Speech
 		// event triggered whenever a valid word is picked up by the mic
 		private void Engine_SpeechRecognized(object sender, SpeechRecognizedEventArgs e)
 		{
+			if (e.Result.Text == "hey scarlet")
+				wake = true;
+
+			if(wake == false)
+				return;
 			switch (e.Result.Text)
 			{
 				case "temperature":
 					speechSynthesizer.Speak($"The current temperature in {weather.GetCity()} is {weather.GetCurrentTemp()} Degrees");
+					wake = false;
 					break;
 
 				case "calendar":
 					calendar.DisplayEvents(speechSynthesizer, Calendar.EventType.All, Calendar.EventFrequency.All);
+					wake = false;
 					break;
 
 				case "work":
 					calendar.DisplayEvents(speechSynthesizer, Calendar.EventType.Work, Calendar.EventFrequency.All);
+					wake = false;
 					break;
 
 				case "class":
 					calendar.DisplayEvents(speechSynthesizer, Calendar.EventType.Class, Calendar.EventFrequency.All);
+					wake = false;
 					break;
 
 				case "when is my next shift":
 					calendar.DisplayEvents(speechSynthesizer, Calendar.EventType.Work, Calendar.EventFrequency.Single);
+					wake = false;
 					break;
 
 				case "open calculator":
 					Process.Start(@"C:\Windows\SysWOW64\calc.exe");
+					wake = false;
 					break;
 
 				case "close calculator":
 					CloseProgram("calculator");
+					wake = false;
 					break;
 
 				case "quit":
@@ -106,7 +120,7 @@ namespace Text2Speech
 		private void SetupGrammarAndChoices()
 		{
 			Choices commands = new Choices();
-			commands.Add(new string[] { "temperature", "calendar","when is my next shift", "work", "class", "open calculator", "close calculator", "quit"});
+			commands.Add(new string[] { "temperature", "calendar","when is my next shift", "work", "class", "open calculator", "close calculator", "hey scarlet", "quit"});
 			GrammarBuilder grammarBuilder = new GrammarBuilder();
 			grammarBuilder.Append(commands);
 			Grammar grammer = new Grammar(grammarBuilder);
