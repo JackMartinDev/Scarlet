@@ -3,6 +3,7 @@ using System.Threading;
 using System.Speech.Synthesis;
 using System.Speech.Recognition;
 using System.Diagnostics;
+using System.IO;
 using System.Globalization;
 
 namespace Text2Speech
@@ -119,7 +120,7 @@ namespace Text2Speech
 		private void SetupGrammarAndChoices()
 		{
 			Choices commands = new Choices();
-			commands.Add(new string[] { "temperature", "calendar","when is my next shift", "when is my next class", "open calculator", "close calculator", "hey scarlet", "quit"});
+			commands.Add(File.ReadAllLines(@"C:\Users\jackm\source\repos\Text2Speech\Text2Speech\commands.txt"));
 			GrammarBuilder grammarBuilder = new GrammarBuilder();
 			grammarBuilder.Append(commands);
 			Grammar grammer = new Grammar(grammarBuilder);
