@@ -1,0 +1,8 @@
+temperature
+calendar
+when is my next shift
+when is my next class
+open calculator
+close calculator
+hey scarlet
+quit
